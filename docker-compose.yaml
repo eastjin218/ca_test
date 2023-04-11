@@ -1,0 +1,40 @@
+version: "3"
+
+services:
+  ca-mongodb:
+    image: mongo:latest
+    container_name: ca-mongodb
+    ports:
+      - "4000:27017"
+    environment:
+      - "MONGO_INITDB_DATABASE=customer_account"
+      - "MONGO_INITDB_ROOT_USERNAME=admin"
+      - "MONGO_INITDB_ROOT_PASSWORD=smartm2m"
+    command:
+      mongod --quiet --logpath /dev/null
+
+  customer-account:
+    build:
+      context: customer
+      dockerfile: Dockerfile
+    # image: python:3.8.16-alpine
+    container_name: customer-account
+    ports:
+      - "5000:5000"
+    depends_on:
+      - ca-mongodb
+    environment:
+      - SECRET_KEY_BASE=secret
+      - MONGO_URL=mongodb://admin:smartm2m@localhost:4000/customer_account?authSource=admin
+
+  # backend:
+  #   build:
+  #     context: backend
+  #     dockergile: Dockerfile
+  #   container_name : backend
+  #   ports:
+  #     - "5001:5001"
+  #   depends_on:
+  #     - ca-mongodb
+  #     - customer-account
+    
