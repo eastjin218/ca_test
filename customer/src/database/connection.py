@@ -9,8 +9,11 @@ import os
 
 class Settings(BaseSettings):
 
+    DATABASE_URL: Optional[str] = "mongodb://admin:smartm2m@ca-mongodb:27017/customer_account?authSource=admin"
+    SECRET_KEY: Optional[str] = "default"
+
     async def initialize_database(self):
-        client = AsyncIOMotorClient("mongodb://admin:smartm2m@ca-mongodb:27017/customer_account?authSource=admin")
+        client = AsyncIOMotorClient(self.DATABASE_URL)
         await init_beanie(client.customer_account,  document_models=[User])
 
     class Config:
