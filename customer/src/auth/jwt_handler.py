@@ -13,12 +13,12 @@ def create_access_token(user: str) -> str:
         "user": user,
         "expires": time.time() +3600
     }
-    token = jwt.encode(pyload, settings.SECRET_KEY, algorithm='HS256')
+    token = jwt.encode(payload, setting.SECRET_KEY, algorithm='HS256')
     return token
 
 async def verify_access_token(token:str) -> dict:
     try:
-        data = jwt.decode(token, settings.SECRET_KEY, algorithm=["HS256"])
+        data = jwt.decode(token, setting.SECRET_KEY, algorithm=["HS256"])
         
         expire = data.get("expoires")
         if expire is None:
