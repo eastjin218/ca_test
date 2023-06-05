@@ -1,5 +1,6 @@
 from auth.hash_password import HashPassword
 from auth.jwt_handler import create_access_token
+from auth.authenticate import authenticate
 from database.connection import Database
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
@@ -30,7 +31,7 @@ async def sign_user_up(user: User) -> dict:
 
 @user_router.post("/signin", response_model=TokenResponse)
 async def sign_user_in(user: OAuth2PasswordRequestForm = Depends()) -> dict:
-    user_exist = await User.find_one(User.user_id == user.user_id)
+    user_exist = await User.find_one(User.user_id == user.username)
     if not user_exist:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -50,5 +51,10 @@ async def sign_user_in(user: OAuth2PasswordRequestForm = Depends()) -> dict:
 
 @user_router.get("/get_info")
 async def get_user_info() -> dict:
+    user_info = await user_database.get_all()
+    return {"message" : user_info}
+
+@user_router.post("/test_auth")
+async def create_event(user: str = Depends(authenticate)) -> dict:
     user_info = await user_database.get_all()
     return {"message" : user_info}

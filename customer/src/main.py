@@ -26,13 +26,9 @@ app.include_router(user_router,  prefix="/user")
 async def init_db():
     await settings.initialize_database()
 
-@app.get("/", tags=["root"])
+@app.get("/health_check", tags=["root"])
 async def read_root() -> dict:
     return {"message": "Welcome to LG Checklist tool!!_ca"}
-
-@app.post('/test')
-async def test_api() -> dict:
-    return {'message':'test_api'}
 
 if __name__=='__main__':
     uvicorn.run("main:app", host="0.0.0.0", port=5000, reload=True)

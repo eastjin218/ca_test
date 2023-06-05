@@ -22,6 +22,8 @@ services:
       - "5000:5000"
     depends_on:
       - ca-mongodb
+    volumes:
+      - ./customer/src:/src
     environment:
       - SECRET_KEY_BASE=secret
       - MONGO_URL=mongodb://admin:smartm2m@localhost:4000/customer_account?authSource=admin

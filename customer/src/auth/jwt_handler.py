@@ -4,7 +4,7 @@ from datetime import datetime
 from database.connection import Settings
 from fastapi import HTTPException, status
 from jose import jwt, JWTError
-from schemes.users import User
+from schema.users import User
 
 setting = Settings()
 
@@ -18,9 +18,8 @@ def create_access_token(user: str) -> str:
 
 async def verify_access_token(token:str) -> dict:
     try:
-        data = jwt.decode(token, setting.SECRET_KEY, algorithm=["HS256"])
-        
-        expire = data.get("expoires")
+        data = jwt.decode(token, setting.SECRET_KEY, algorithms=["HS256"])
+        expire = data.get("expires")
         if expire is None:
             raise HTTPException(
                 status_code = status.HTTP_400_BAD_REQUEST,
@@ -31,7 +30,8 @@ async def verify_access_token(token:str) -> dict:
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail = "Token expired!"
             )
-        user_exist = await User.find_one(User.email == data["User"])
+        user_exist = await User.find_one(User.user_id == data["user"])
+        print("user_exist : ", user_exist)
         if not user_exist:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
