@@ -8,10 +8,11 @@ from schema.users import User
 
 setting = Settings()
 
-def create_access_token(user: str) -> str:
+def create_access_token(user: str,  is_superuser:bool) -> str:
     payload ={
         "user": user,
-        "expires": time.time() +3600
+        "expires": time.time() +3600,
+        "is_superuser": is_superuser
     }
     token = jwt.encode(payload, setting.SECRET_KEY, algorithm='HS256')
     return token
@@ -25,13 +26,13 @@ async def verify_access_token(token:str) -> dict:
                 status_code = status.HTTP_400_BAD_REQUEST,
                 detail="No access token supplied"
             )
+
         if datetime.utcnow() > datetime.utcfromtimestamp(expire):
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail = "Token expired!"
             )
         user_exist = await User.find_one(User.user_id == data["user"])
-        print("user_exist : ", user_exist)
         if not user_exist:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,

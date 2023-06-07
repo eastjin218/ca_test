@@ -19,7 +19,7 @@ services:
     # image: python:3.8.16-alpine
     container_name: customer-account
     ports:
-      - "5000:5000"
+      - "8000:8000"
     depends_on:
       - ca-mongodb
     volumes:

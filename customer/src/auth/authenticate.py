@@ -12,4 +12,4 @@ async def authenticate(token:str = Depends(oauth2_scheme)) -> str:
         ) 
         
     decode_token = await verify_access_token(token)
-    return decode_token["user"]
+    return decode_token
