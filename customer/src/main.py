@@ -59,7 +59,7 @@ html = """
     </body>
 </html>
 """
-
+check_status = "true"
 
 @app.get("/")
 async def get():
