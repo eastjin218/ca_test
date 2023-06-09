@@ -12,6 +12,13 @@ services:
       - "MONGO_INITDB_ROOT_PASSWORD=smartm2m"
     command: mongod --quiet --logpath /dev/null
 
+  redis:
+    image: redis
+    container_name: redis
+    ports:
+      - 6379:6379
+    restart: always
+
   customer-account:
     build:
       context: customer
@@ -22,6 +29,7 @@ services:
       - "8000:8000"
     depends_on:
       - ca-mongodb
+      - redis
     volumes:
       - ./customer/src:/src
     environment:

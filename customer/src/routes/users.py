@@ -6,6 +6,8 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from schema.users import User, UserUpdate, TokenResponse
 
+from routes import pubsub
+
 user_router = APIRouter(
     tags=["User"],
 )
@@ -109,12 +111,13 @@ async def update_auth(id, body: UserUpdate, user: str = Depends(authenticate)) -
         detail="Invalid details passed."
     )
 
-# @user_router.get("/get_info")
-# async def get_user() -> dict:
-#     user_info = await user_database.get_all()
-#     respon = {
-#             "state":200,
-#             "result":user_info,
-#             "message": "Success"
-#         }
-#     return respon
+@user_router.get("/get_info")
+async def get_user() -> dict:
+    user_info = await user_database.get_all()
+    await pubsub.sending_message(user_info)
+    respon = {
+            "state":200,
+            "result":user_info,
+            "message": "Success"
+        }
+    return respon
